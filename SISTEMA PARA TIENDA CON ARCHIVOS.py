@@ -74,9 +74,9 @@ class Inventario:
         if id in self.productos:
             producto = self.productos.pop(id)
             self.guardar_inventario()
-            print(f"Producto con ID {id} eliminado. Detalles: {producto}")
+            return f"Producto con ID {id} eliminado. Detalles: {producto}"
         else:
-            print(f"Error: No se encontró un producto con el ID {id}.")
+            return f"Error: No se encontró un producto con el ID {id}."
 
     def actualizar_producto(self, id, nombre=None, cantidad=None, precio=None):
         if id in self.productos:
@@ -88,9 +88,9 @@ class Inventario:
             if precio is not None:
                 producto.set_precio(precio)
             self.guardar_inventario()
-            print(f"Producto con ID {id} actualizado.")
+            return f"Producto con ID {id} actualizado."
         else:
-            print(f"Error: No se encontró un producto con el ID {id}.")
+            return f"Error: No se encontró un producto con el ID {id}."
 
     def buscar_producto_por_id(self, id):
         return self.productos.get(id)
@@ -101,13 +101,12 @@ class Inventario:
 
     def mostrar_todos_los_productos(self):
         if not self.productos:
-            print("No hay productos en el inventario.")
+            return "No hay productos en el inventario."
         else:
-            for producto in self.productos.values():
-                print(producto)
+            return '\n'.join(str(producto) for producto in self.productos.values())
 
     def mostrar_ruta_archivo(self):
-        print(f"El archivo de inventario se encuentra en: {self.archivo}")
+        return f"El archivo de inventario se encuentra en: {self.archivo}"
 
     def cambiar_nombre_archivo(self, nuevo_nombre):
         if not nuevo_nombre.endswith('.txt'):
@@ -120,13 +119,13 @@ class Inventario:
                 file.write(contenido)
 
             self.archivo = nuevo_nombre
-            print(f"Nombre del archivo cambiado a {self.archivo}.")
+            return f"Nombre del archivo cambiado a {self.archivo}."
         except FileNotFoundError:
-            print("Error: El archivo original no se encuentra.")
+            return "Error: El archivo original no se encuentra."
         except PermissionError:
-            print("Error: No se tienen permisos para cambiar el nombre del archivo.")
+            return "Error: No se tienen permisos para cambiar el nombre del archivo."
         except Exception as e:
-            print(f"Error inesperado al cambiar el nombre del archivo: {e}")
+            return f"Error inesperado al cambiar el nombre del archivo: {e}"
 
 # Funciones para mostrar el logo y la información
 def mostrar_logo_uea():
@@ -142,6 +141,9 @@ def mostrar_logo_uea():
 
 def mostrar_informacion():
     print("Ingeniería en Tecnologías de la Información\n")
+
+def limpiar_consola():
+    print("\n" * 100)  # Simular el borrado de la consola imprimiendo 100 líneas en blanco.
 
 # Función para mostrar el menú
 def mostrar_menu():
@@ -173,18 +175,14 @@ def main():
             precio = float(input("Ingrese el precio del producto: "))
             producto = Producto(id, nombre, cantidad, precio)
             inventario.añadir_producto(producto)
+            limpiar_consola()
+            print("Producto añadido con éxito.")
 
         elif opcion == '2':
             id = input("Ingrese el ID del producto a eliminar: ")
-            nombre = input("Ingrese el nombre del producto (dejar en blanco para no cambiar): ")
-            cantidad = input("Ingrese la cantidad del producto (dejar en blanco para no cambiar): ")
-            precio = input("Ingrese el precio del producto (dejar en blanco para no cambiar): ")
-            cantidad = int(cantidad) if cantidad else None
-            precio = float(precio) if precio else None
-            if cantidad is None and precio is None:
-                inventario.eliminar_producto(id)
-            else:
-                print("Error: Para eliminar un producto, no se deben ingresar nombre, cantidad o precio.")
+            mensaje = inventario.eliminar_producto(id)
+            limpiar_consola()
+            print(mensaje)
 
         elif opcion == '3':
             id = input("Ingrese el ID del producto a actualizar: ")
@@ -194,7 +192,9 @@ def main():
             nombre = nombre if nombre else None
             cantidad = int(cantidad) if cantidad else None
             precio = float(precio) if precio else None
-            inventario.actualizar_producto(id, nombre, cantidad, precio)
+            mensaje = inventario.actualizar_producto(id, nombre, cantidad, precio)
+            limpiar_consola()
+            print(mensaje)
 
         elif opcion == '4':
             criterio = input("Ingrese el nombre del producto o el ID a buscar: ")
@@ -208,16 +208,23 @@ def main():
                         print(producto)
                 else:
                     print("No se encontraron productos con ese nombre o ID.")
+            limpiar_consola()
 
         elif opcion == '5':
-            inventario.mostrar_todos_los_productos()
+            productos = inventario.mostrar_todos_los_productos()
+            print(productos)
+            limpiar_consola()
 
         elif opcion == '6':
-            inventario.mostrar_ruta_archivo()
+            ruta = inventario.mostrar_ruta_archivo()
+            print(ruta)
+            limpiar_consola()
 
         elif opcion == '7':
             nuevo_nombre = input("Ingrese el nuevo nombre del archivo (sin extensión): ")
-            inventario.cambiar_nombre_archivo(nuevo_nombre)
+            mensaje = inventario.cambiar_nombre_archivo(nuevo_nombre)
+            print(mensaje)
+            limpiar_consola()
 
         elif opcion == '8':
             print("Saliendo del sistema de gestión de inventarios.")
@@ -225,8 +232,7 @@ def main():
 
         else:
             print("Opción no válida. Inténtelo de nuevo.")
+            limpiar_consola()
 
 if __name__ == "__main__":
     main()
-
-
